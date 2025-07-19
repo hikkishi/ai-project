@@ -1,28 +1,26 @@
-# Kiki AI - Multilingual AI Assistant with Internet Learning
+# Kiki AI 
 
-🤖 **Kiki** is an advanced AI assistant that combines multilingual capabilities with internet learning to provide intelligent, adaptive conversations in multiple languages.
+## Features
 
-## ✨ Features
-
-### 🌍 Multilingual Support
+### Multilingual Support
 - **12 Languages Supported**: English, Spanish, French, German, Italian, Portuguese, Japanese, Chinese, Korean, Russian, Arabic, Hindi
 - **Auto Language Detection**: Automatically detects the user's language
 - **Real-time Translation**: Translates conversations between languages
 - **Cultural Adaptation**: Responds appropriately for different cultural contexts
 
-### 🧠 Internet Learning
+### Internet Learning
 - **Real-time Web Search**: Searches the internet for current information
 - **Knowledge Extraction**: Automatically extracts facts from web sources
 - **Source Reliability**: Evaluates and scores information sources
 - **Continuous Learning**: Builds knowledge base from conversations
 
-### 🔧 Advanced AI Features
+### Advanced AI Features
 - **Personality-driven Responses**: Curious, intelligent, and helpful personality
 - **Memory System**: Remembers recent conversations
 - **Learning Statistics**: Tracks learning progress and statistics
 - **Ollama Integration**: Uses local AI models for privacy
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.7 or higher
@@ -68,7 +66,7 @@
    python kiki_ai.py
    ```
 
-## 💬 Usage
+## Usage
 
 ### Basic Chat
 ```
@@ -121,7 +119,7 @@ neuro-ai-project/
     └── search_history.json
 ```
 
-## 🧩 System Components
+## System Components
 
 ### 1. KikiAI (Main Class)
 The central AI assistant that coordinates all systems:
@@ -151,7 +149,7 @@ General learning and adaptation:
 - Conversation analysis
 - Response improvement
 
-## 🔧 Configuration
+## Configuration
 
 ### Language Settings
 ```python
@@ -166,7 +164,7 @@ self.auto_translate = True         # Auto-translate responses
 self.internet_learning_enabled = True  # Enable internet learning
 ```
 
-### Supported Languages
+### Supported Languages(12)
 - English (en)
 - Spanish (es)
 - French (fr)
@@ -180,7 +178,7 @@ self.internet_learning_enabled = True  # Enable internet learning
 - Arabic (ar)
 - Hindi (hi)
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -214,21 +212,21 @@ self.internet_learning_enabled = True  # Enable internet learning
 3. **Memory Management**: Clear old data periodically
 4. **Learning Accuracy**: Verify source reliability
 
-## 🎯 Commands
+## Commands
 
 - `quit` or `exit`: Exit the chat
 - `stats`: View learning statistics
 - Type in any language to chat
 - Ask questions to trigger internet learning
 
-## 🔒 Privacy & Security
+## Privacy & Security
 
 - **Local AI**: Uses local Ollama models for privacy
 - **Data Storage**: All learning data stored locally
 - **Web Requests**: Only searches public information
 - **No Personal Data**: Does not store personal information
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 - Voice interaction support
 - More language models
@@ -237,7 +235,7 @@ self.internet_learning_enabled = True  # Enable internet learning
 - Mobile app integration
 - Cloud synchronization
 
-## 🤝 Contributing
+## Contributing
 
 Feel free to contribute to Kiki AI by:
 1. Adding new languages
@@ -246,18 +244,15 @@ Feel free to contribute to Kiki AI by:
 4. Adding new features
 5. Fixing bugs
 
-## 📄 License
+## License
 
 This project is open source and available under the MIT License.
 
-## 📞 Support
+## Support
 
 For questions or support:
 - Check the troubleshooting section
 - Review the code documentation
 - Test with different inputs
 - Verify system requirements
-
----
-
-**Enjoy chatting with Kiki AI! 🤖✨**
+- ask me
