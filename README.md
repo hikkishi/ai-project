@@ -80,28 +80,28 @@ Kiki: ¡Hola! Soy Kiki, tu compañera AI multilingüe! ¡Puedo chatear en muchos
 ### Learning from the Internet
 ```
 You: What is quantum computing?
-Kiki: 🔍 Searching the internet for: quantum computing
+Kiki: Searching the internet for: quantum computing
 Kiki: Quantum computing is a revolutionary technology that uses quantum mechanical phenomena...
 ```
 
 ### View Learning Statistics
 ```
 You: stats
-🧠 KIKI'S LEARNING STATISTICS
+KIKI'S LEARNING STATISTICS
 ==================================================
-📚 Languages supported: 12
-🔤 Cached translations: 45
-🌐 Topics learned: 8
-📝 Facts collected: 127
-🔍 Searches performed: 23
-📊 Average source reliability: 0.78
-💭 Vocabulary learned: 1,234 words
-📖 Phrases learned: 567
-🔄 Conversation patterns: 89
+ Languages supported: 12
+ Cached translations: 45
+ Topics learned: 8
+ Facts collected: 127
+ Searches performed: 23
+ Average source reliability: 0.78
+ Vocabulary learned: 1,234 words
+ Phrases learned: 567
+ Conversation patterns: 89
 ==================================================
 ```
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 neuro-ai-project/
@@ -184,7 +184,7 @@ self.internet_learning_enabled = True  # Enable internet learning
 
 1. **Ollama not running**:
    ```
-   ⚠️ Ollama server is not running!
+   Ollama server is not running!
    Please start Ollama first by running: ollama serve
    ```
    **Solution**: Start Ollama service before running Kiki AI
@@ -256,3 +256,4 @@ For questions or support:
 - Test with different inputs
 - Verify system requirements
 - ask me
+
