@@ -1,9 +1,18 @@
+"""Internet learning helpers: lightweight web search and fact extraction.
+
+This module uses public APIs (DuckDuckGo, Wikipedia summary) to gather
+short facts for local learning. Results are stored under `data/`.
+"""
+
+from __future__ import annotations
+
 import hashlib
 import json
 import os
 import re
 from collections import defaultdict
 from datetime import datetime, timedelta
+from typing import List, Dict, Optional
 from urllib.parse import urlparse
 
 import requests

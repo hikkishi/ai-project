@@ -1,6 +1,14 @@
+"""Tomoka assistant runner.
+
+This module provides a small, readable assistant implementation. It is
+intentionally lightweight: network calls are best-effort and persisted
+data lives in `data/`.
+"""
+
 import random
 import time
 from datetime import datetime
+from typing import Optional
 
 import requests
 
@@ -53,12 +61,12 @@ class KikiAI:
         self.auto_translate = True
         self.internet_learning_enabled = True
         
-    def add_to_memory(self, user_input, response):
-        """Add conversation to memory"""
+    def add_to_memory(self, user_input: str, response: str) -> None:
+        """Add conversation to memory."""
         self.memory_mgr.add(user_input, response)
     
-    def get_personality_context(self):
-        """Get context for AI personality"""
+    def get_personality_context(self) -> str:
+        """Get context for AI personality."""
         context = f"""You are {self.name}, an AI assistant with the following personality traits: {', '.join(self.personality['traits'])}.
         
 You should be:
@@ -79,8 +87,8 @@ Recent conversation context:
         
         return context
     
-    def get_enhanced_personality_context(self, detected_language, internet_knowledge=None, relevant_facts=None):
-        """Get enhanced context with internet knowledge and language info"""
+    def get_enhanced_personality_context(self, detected_language: str, internet_knowledge: Optional[dict] = None, relevant_facts: Optional[list] = None) -> str:
+        """Get enhanced context with internet knowledge and language info."""
         context = f"""You are {self.name}, a multilingual AI assistant with internet learning capabilities.
         
 Personality traits: {', '.join(self.personality['traits'])}
@@ -115,7 +123,7 @@ Detected user language: {detected_language}
         
         return context
 
-    def get_status(self):
+    def get_status(self) -> str:
         """Return a concise status summary about the bot and its subsystems."""
         status_lines = []
 
@@ -177,8 +185,8 @@ Detected user language: {detected_language}
 
         return "\n".join(status_lines)
     
-    def generate_response(self, user_input):
-        """Generate response using multilingual and internet learning capabilities"""
+    def generate_response(self, user_input: str) -> str:
+        """Generate response using multilingual and internet learning capabilities."""
         try:
             # Process input with multilingual support
             multilingual_data = self.multilingual.process_multilingual_input(user_input, self.user_language)
@@ -231,7 +239,7 @@ Detected user language: {detected_language}
             
             if response.status_code == 200:
                 result = response.json()
-                ai_response = result['response'].strip()
+                ai_response = result.get('response', '').strip()
                 
                 # Add personality flair
                 if random.random() < 0.3:
@@ -258,10 +266,10 @@ Detected user language: {detected_language}
             fallback = random.choice(self.personality["responses"]["confusion"])
             return fallback
     
-    def chat(self):
-        """Main chat loop"""
+    def chat(self) -> None:
+        """Main chat loop."""
         print("=" * 50)
-        print(f"🤖 {self.name} is online!")
+        print(f"{self.name} is online!")
         print("=" * 50)
         print(random.choice(self.personality["responses"]["greeting"]))
         print("\nType 'quit' to exit the chat.")
@@ -288,8 +296,8 @@ Detected user language: {detected_language}
             # Add to memory
             self.add_to_memory(user_input, response)
 
-def main():
-    """Main function to run the chatbot"""
+def main() -> None:
+    """Main function to run the chatbot."""
     print("Initializing Tomoka AI with multilingual and internet learning capabilities...")
     
     # Check if Ollama is running
@@ -299,8 +307,8 @@ def main():
             print("⚠️  Ollama server is not running!")
             print("Please start Ollama first by running: ollama serve")
             return
-    except:
-        print("⚠️  Ollama server is not running!")
+    except Exception:
+        print("Ollama server is not running!")
         print("Please start Ollama first by running: ollama serve")
         return
     

@@ -1,6 +1,17 @@
+"""Multilingual helpers: language detection, translation cache, and patterns.
+
+The implementation is intentionally small and dependency-light: it uses
+keyword heuristics for detection and optionally calls LibreTranslate
+endpoints for translations.
+"""
+
+from __future__ import annotations
+
 import json
 import os
 import re
+from typing import Dict, Optional
+
 import requests
 from datetime import datetime
 from collections import defaultdict
@@ -52,8 +63,8 @@ class MultilingualSystem:
         self.translations = self.load_translations()
         self.language_patterns = self.load_language_patterns()
     
-    def load_languages(self):
-        """Load supported languages configuration"""
+    def load_languages(self) -> Dict:
+        """Load supported languages configuration."""
         if os.path.exists(self.languages_file):
             with open(self.languages_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -64,15 +75,15 @@ class MultilingualSystem:
             'learning_enabled': True
         }
     
-    def load_translations(self):
-        """Load translation cache"""
+    def load_translations(self) -> Dict:
+        """Load translation cache."""
         if os.path.exists(self.translations_file):
             with open(self.translations_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         return {}
     
     def load_language_patterns(self):
-        """Load language-specific patterns"""
+        """Load language-specific patterns."""
         if os.path.exists(self.language_patterns_file):
             with open(self.language_patterns_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -89,8 +100,8 @@ class MultilingualSystem:
         with open(self.language_patterns_file, 'w', encoding='utf-8') as f:
             json.dump(dict(self.language_patterns), f, ensure_ascii=False, indent=2)
     
-    def detect_language(self, text):
-        """Detect the language of input text"""
+    def detect_language(self, text: str) -> str:
+        """Detect the language of input text."""
         if not text.strip():
             return self.supported_languages['default']
         
@@ -115,8 +126,8 @@ class MultilingualSystem:
         
         return self.supported_languages['default']
     
-    def translate_text(self, text, target_language, source_language='auto'):
-        """Translate text using online service or cache"""
+    def translate_text(self, text: str, target_language: str, source_language: str = 'auto') -> str:
+        """Translate text using online service or cache."""
         # Check cache first
         cache_key = f"{text}_{source_language}_{target_language}"
         if cache_key in self.translations:
@@ -135,8 +146,8 @@ class MultilingualSystem:
         # Fallback: return original text
         return text
     
-    def translate_with_libretranslate(self, text, target_lang, source_lang='auto'):
-        """Use LibreTranslate API for translation"""
+    def translate_with_libretranslate(self, text: str, target_lang: str, source_lang: str = 'auto') -> Optional[str]:
+        """Use LibreTranslate API for translation."""
         # Convert our language codes to LibreTranslate codes
         lang_map = {
             'english': 'en', 'spanish': 'es', 'french': 'fr', 'german': 'de',
@@ -171,15 +182,15 @@ class MultilingualSystem:
         
         return None
     
-    def get_greeting(self, language='english'):
-        """Get greeting in specified language"""
+    def get_greeting(self, language: str = 'english') -> str:
+        """Get greeting in specified language."""
         if language in self.greetings:
             import random
             return random.choice(self.greetings[language])
         return self.greetings['english'][0]
     
-    def learn_language_pattern(self, text, language, response_type='general'):
-        """Learn language-specific patterns"""
+    def learn_language_pattern(self, text: str, language: str, response_type: str = 'general') -> None:
+        """Learn language-specific patterns."""
         # Extract patterns from text
         words = re.findall(r'\b\w+\b', text.lower())
         
@@ -197,8 +208,8 @@ class MultilingualSystem:
         if len(self.language_patterns[language][response_type]) > 100:
             self.language_patterns[language][response_type] = self.language_patterns[language][response_type][-100:]
     
-    def get_language_appropriate_response(self, text, detected_language):
-        """Get culturally appropriate response for the language"""
+    def get_language_appropriate_response(self, text: str, detected_language: str) -> Optional[str]:
+        """Get culturally appropriate response for the language."""
         # Basic response templates for different languages
         templates = {
             'english': {
@@ -251,8 +262,8 @@ class MultilingualSystem:
             import random
             return random.choice(lang_templates['acknowledgment'])
     
-    def process_multilingual_input(self, text, target_language=None):
-        """Process input text with multilingual support"""
+    def process_multilingual_input(self, text: str, target_language: Optional[str] = None) -> Dict:
+        """Process input text with multilingual support."""
         # Detect language
         detected_language = self.detect_language(text)
         
@@ -279,8 +290,8 @@ class MultilingualSystem:
             'needs_translation': False
         }
     
-    def get_language_stats(self):
-        """Get statistics about language usage"""
+    def get_language_stats(self) -> Dict:
+        """Get statistics about language usage."""
         stats = {
             'supported_languages': len(self.supported_languages.get('supported', [])),
             'cached_translations': len(self.translations),

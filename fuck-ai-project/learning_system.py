@@ -1,3 +1,11 @@
+"""Learning system: vocabulary, patterns and simple response caching.
+
+This module is intentionally simple: it records word frequencies and
+keeps lightweight dynamic responses for quick replies.
+"""
+
+from __future__ import annotations
+
 import difflib
 import json
 import os
@@ -5,10 +13,10 @@ import re
 from collections import defaultdict
 from datetime import datetime
 import pickle
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 class LearningSystem:
-    def __init__(self, data_dir="data"):
+    def __init__(self, data_dir: str = "data") -> None:
         self.data_dir = data_dir
         self.vocabulary_file = os.path.join(data_dir, "vocabulary.json")
         self.patterns_file = os.path.join(data_dir, "patterns.json")
@@ -28,8 +36,8 @@ class LearningSystem:
         self.min_pattern_frequency = 2
         self.max_vocabulary_size = 10000
         
-    def load_vocabulary(self):
-        """Load vocabulary from file"""
+    def load_vocabulary(self) -> Dict:
+        """Load vocabulary from file."""
         if os.path.exists(self.vocabulary_file):
             with open(self.vocabulary_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -48,8 +56,8 @@ class LearningSystem:
             "frequency": defaultdict(int)
         }
     
-    def load_patterns(self):
-        """Load conversation patterns from file"""
+    def load_patterns(self) -> Dict:
+        """Load conversation patterns from file."""
         if os.path.exists(self.patterns_file):
             with open(self.patterns_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -59,8 +67,8 @@ class LearningSystem:
             "trigger_words": {}
         }
     
-    def load_responses(self):
-        """Load learned responses from file"""
+    def load_responses(self) -> Dict:
+        """Load learned responses from file."""
         if os.path.exists(self.responses_file):
             with open(self.responses_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -71,14 +79,14 @@ class LearningSystem:
         }
     
     def load_context_associations(self):
-        """Load context associations from pickle file"""
+        """Load context associations from pickle file."""
         if os.path.exists(self.context_file):
             with open(self.context_file, 'rb') as f:
                 return pickle.load(f)
         return defaultdict(lambda: defaultdict(int))
     
-    def save_all_data(self):
-        """Save all learning data to files"""
+    def save_all_data(self) -> None:
+        """Save all learning data to files."""
         # Convert defaultdict to regular dict for JSON serialization
         vocab_to_save = dict(self.vocabulary)
         vocab_to_save["frequency"] = dict(self.vocabulary["frequency"])
@@ -95,8 +103,8 @@ class LearningSystem:
         with open(self.context_file, 'wb') as f:
             pickle.dump(dict(self.context_associations), f)
     
-    def learn_from_conversation(self, user_input, ai_response, context=None):
-        """Learn from a conversation exchange"""
+    def learn_from_conversation(self, user_input: str, ai_response: str, context: Optional[str] = None) -> None:
+        """Learn from a conversation exchange."""
         # Learn vocabulary
         self._learn_vocabulary(user_input)
         self._learn_vocabulary(ai_response)
@@ -114,8 +122,8 @@ class LearningSystem:
         # Save periodically
         self.save_all_data()
     
-    def _learn_vocabulary(self, text):
-        """Learn new words and phrases from text"""
+    def _learn_vocabulary(self, text: str) -> None:
+        """Learn new words and phrases from text."""
         # Clean and tokenize text
         words = re.findall(r'\b\w+\b', text.lower())
         
@@ -142,8 +150,8 @@ class LearningSystem:
                     }
                 self.vocabulary["phrases"][phrase]["frequency"] += 1
     
-    def _learn_patterns(self, user_input, ai_response):
-        """Learn conversation patterns"""
+    def _learn_patterns(self, user_input: str, ai_response: str) -> None:
+        """Learn conversation patterns."""
         # Extract key patterns from user input
         user_patterns = self._extract_patterns(user_input)
         response_patterns = self._extract_patterns(ai_response)
@@ -157,8 +165,8 @@ class LearningSystem:
                 if response_pattern not in self.patterns["input_patterns"][user_pattern]:
                     self.patterns["input_patterns"][user_pattern].append(response_pattern)
     
-    def _extract_patterns(self, text):
-        """Extract patterns from text"""
+    def _extract_patterns(self, text: str) -> List[str]:
+        """Extract patterns from text."""
         patterns = []
         
         # Question patterns
@@ -192,8 +200,8 @@ class LearningSystem:
         
         return patterns
     
-    def _learn_context_associations(self, user_input, ai_response, context):
-        """Learn associations between context and responses"""
+    def _learn_context_associations(self, user_input: str, ai_response: str, context: str) -> None:
+        """Learn associations between context and responses."""
         # Extract keywords from context
         context_keywords = re.findall(r'\b\w+\b', context.lower())
         response_keywords = re.findall(r'\b\w+\b', ai_response.lower())
