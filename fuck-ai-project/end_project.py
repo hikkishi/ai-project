@@ -11,7 +11,7 @@ from memory import MemoryManager
 
 class KikiAI:
     def __init__(self):
-        self.name = "Kiki"
+        self.name = "Tomoka"
         self.personality = {
             "traits": [
                 "curious", "intelligent", "multilingual", "helpful", 
@@ -23,9 +23,9 @@ class KikiAI:
             ],
             "responses": {
                 "greeting": [
-                    "Hello! I'm Kiki, your multilingual AI companion! I can chat in many languages and learn from the internet!",
-                    "Hi there! I'm Kiki, ready to learn and chat with you in any language you prefer!",
-                    "Greetings! I'm Kiki, your intelligent AI assistant with multilingual and internet learning capabilities!"
+                    f"Hello! I'm {self.name}, your multilingual AI companion! I can chat in many languages and learn from the internet!",
+                    f"Hi there! I'm {self.name}, ready to learn and chat with you in any language you prefer!",
+                    f"Greetings! I'm {self.name}, your intelligent AI assistant with multilingual and internet learning capabilities!"
                 ],
                 "goodbye": [
                     "Goodbye! I've learned so much from our conversation. Thanks for teaching me!",
@@ -75,7 +75,7 @@ Recent conversation context:
         
         # Add recent memory context
         for mem in self.memory_mgr.get_recent(3):  # Last 3 conversations
-            context += f"User: {mem['user']}\nKiki: {mem['neuro']}\n"
+            context += f"User: {mem['user']}\n{self.name}: {mem['neuro']}\n"
         
         return context
     
@@ -97,7 +97,7 @@ Detected user language: {detected_language}
         """
         
         # Add internet knowledge if available
-        if internet_knowledge and internet_knowledge['facts']:
+        if internet_knowledge and internet_knowledge.get('facts'):
             context += "\nRecent internet knowledge:\n"
             for fact in internet_knowledge['facts'][:3]:  # Top 3 facts
                 context += f"- {fact['fact']}\n"
@@ -111,9 +111,71 @@ Detected user language: {detected_language}
         # Add recent memory context
         context += "\nRecent conversation context:\n"
         for mem in self.memory_mgr.get_recent(3):  # Last 3 conversations
-            context += f"User: {mem['user']}\nKiki: {mem['neuro']}\n"
+            context += f"User: {mem['user']}\n{self.name}: {mem['neuro']}\n"
         
         return context
+
+    def get_status(self):
+        """Return a concise status summary about the bot and its subsystems."""
+        status_lines = []
+
+        # Basic identity
+        status_lines.append(f"Name: {self.name}")
+
+        # Ollama health
+        try:
+            resp = requests.get(self.ollama_url.replace('/api/generate', '/api/tags'), timeout=5)
+            if resp.status_code == 200:
+                status_lines.append("LLM: reachable")
+            else:
+                status_lines.append(f"LLM: unreachable (status {resp.status_code})")
+        except Exception as e:
+            status_lines.append(f"LLM: unreachable ({e})")
+
+        # Internet access quick check
+        try:
+            r = requests.get("https://api.duckduckgo.com/", timeout=5)
+            if r.status_code == 200:
+                status_lines.append("Internet: reachable")
+            else:
+                status_lines.append(f"Internet: reachable but DDG returned {r.status_code}")
+        except Exception as e:
+            status_lines.append(f"Internet: unreachable ({e})")
+
+        # Subsystem stats
+        try:
+            vocab_stats = self.learning_system.get_vocabulary_stats()
+            status_lines.append(f"Vocabulary words: {vocab_stats.get('total_words')}")
+        except Exception:
+            status_lines.append("Vocabulary: error retrieving stats")
+
+        try:
+            internet_stats = self.internet_learning.get_learning_stats()
+            status_lines.append(f"Learned topics: {internet_stats.get('total_topics')}")
+        except Exception:
+            status_lines.append("InternetLearning: error retrieving stats")
+
+        try:
+            lang_stats = self.multilingual.get_language_stats()
+            status_lines.append(f"Supported languages: {lang_stats.get('supported_languages')}")
+            status_lines.append(f"Cached translations: {lang_stats.get('cached_translations')}")
+        except Exception:
+            status_lines.append("Multilingual: error retrieving stats")
+
+        # Memory
+        try:
+            mem_count = len(self.memory_mgr.to_list())
+            status_lines.append(f"Memory entries: {mem_count}")
+        except Exception:
+            status_lines.append("Memory: error")
+
+        # Learning enabled flag
+        status_lines.append(f"Internet learning enabled: {self.internet_learning_enabled}")
+
+        # Auto-translate flag
+        status_lines.append(f"Auto-translate: {self.auto_translate}")
+
+        return "\n".join(status_lines)
     
     def generate_response(self, user_input):
         """Generate response using multilingual and internet learning capabilities"""
@@ -133,6 +195,10 @@ Detected user language: {detected_language}
                 if detected_language != 'english':
                     goodbye_response = self.multilingual.translate_text(goodbye_response, detected_language)
                 return goodbye_response
+
+            # Status / diagnostics request
+            if any(word in user_lower for word in ["status", "diagnose", "health", "status update"]):
+                return self.get_status()
             
             # Check for internet learning opportunities
             internet_knowledge = None
@@ -148,7 +214,7 @@ Detected user language: {detected_language}
             context = self.get_enhanced_personality_context(detected_language, internet_knowledge, relevant_facts)
             
             # Generate response using Ollama
-            prompt = context + f"\nUser: {processed_input}\nKiki:"
+            prompt = context + f"\nUser: {processed_input}\n{self.name}:"
             
             data = {
                 "model": "llama3.2:1b",
@@ -157,7 +223,7 @@ Detected user language: {detected_language}
                 "options": {
                     "temperature": 0.8,
                     "max_tokens": 200,
-                    "stop": ["User:", "Kiki:"]
+                    "stop": ["User:", f"{self.name}:"]
                 }
             }
             
@@ -224,7 +290,7 @@ Detected user language: {detected_language}
 
 def main():
     """Main function to run the chatbot"""
-    print("Initializing Kiki AI with multilingual and internet learning capabilities...")
+    print("Initializing Tomoka AI with multilingual and internet learning capabilities...")
     
     # Check if Ollama is running
     try:

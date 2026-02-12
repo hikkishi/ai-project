@@ -1,4 +1,4 @@
-# Kiki AI 
+# Tomoka AI
 
 ## Features
 
@@ -14,11 +14,11 @@
 - **Source Reliability**: Evaluates and scores information sources
 - **Continuous Learning**: Builds knowledge base from conversations
 
-### Advanced AI Features
-- **Personality-driven Responses**: Curious, intelligent, and helpful personality
-- **Memory System**: Remembers recent conversations
-- **Learning Statistics**: Tracks learning progress and statistics
-- **Ollama Integration**: Uses local AI models for privacy
+### Basic LLM Features
+- **Personality-driven Responses**: A small set of templates gives the assistant a friendly tone
+- **Memory System**: Remembers recent conversation snippets locally
+- **Status & Health**: Use the `status` command to get reachability and simple stats
+- **Local LLM Support**: Optional Ollama integration if you configure it
 
 ## Quick Start
 
@@ -40,9 +40,9 @@
    - Download the AI model (llama3.2:1b)
    - Set up the project environment
 
-3. **Start Kiki AI**:
+3. **Start the assistant**:
    ```bash
-   python kiki_ai.py
+   python end_project.py
    ```
 
 ### Manual Setup (Alternative)
@@ -61,20 +61,20 @@
    ollama pull llama3.2:1b
    ```
 
-3. **Run Kiki AI**:
+3. **Run the assistant**:
    ```bash
-   python kiki_ai.py
+   python end_project.py
    ```
 
 ## Usage
 
 ### Basic Chat
 ```
-You: Hello Kiki!
-Kiki: Hello! I'm Kiki, your multilingual AI companion! I can chat in many languages and learn from the internet!
+You: Hello Tomoka!
+Tomoka: Hello! I'm Tomoka, your multilingual assistant. I can try to chat in many languages and look up simple facts.
 
 You: ¿Hablas español?
-Kiki: ¡Hola! Soy Kiki, tu compañera AI multilingüe! ¡Puedo chatear en muchos idiomas y aprender de internet!
+Tomoka: ¡Hola! Puedo responder en español si lo prefieres (intento de traducción).
 ```
 
 ### Learning from the Internet
@@ -84,49 +84,47 @@ Kiki: Searching the internet for: quantum computing
 Kiki: Quantum computing is a revolutionary technology that uses quantum mechanical phenomena...
 ```
 
-### View Learning Statistics
+### View Status & Health
 ```
-You: stats
-KIKI'S LEARNING STATISTICS
+You: status
+TOMOKA'S STATUS
 ==================================================
- Languages supported: 12
- Cached translations: 45
- Topics learned: 8
- Facts collected: 127
- Searches performed: 23
- Average source reliability: 0.78
- Vocabulary learned: 1,234 words
- Phrases learned: 567
- Conversation patterns: 89
+Name: Tomoka
+LLM reachable: yes/no (depends on local setup)
+Internet: reachable/unreachable
+Vocabulary words: N
+Learned topics: N
+Cached translations: N
+Memory entries: N
 ==================================================
 ```
 
 ##  Project Structure
 
 ```
-neuro-ai-project/
-├── kiki_ai.py              # Main AI assistant
+Project/
+├── end_project.py           # Main assistant runner (start here)
 ├── multilingual_system.py   # Multilingual support
 ├── internet_learning.py     # Internet learning system
 ├── learning_system.py       # General learning system
-├── setup.py                 # Setup script
-├── README.md               # This file
-└── data/                   # Learning data storage
-    ├── languages.json
-    ├── translations.json
-    ├── internet_knowledge.json
-    ├── learned_facts.json
-    └── search_history.json
+├── setup.py                 # Optional setup script
+├── README.md                # This file
+└── data/                    # Learning data storage
+   ├── languages.json
+   ├── translations.json
+   ├── internet_knowledge.json
+   ├── learned_facts.json
+   └── search_history.json
 ```
 
 ## System Components
 
-### 1. KikiAI (Main Class)
-The central AI assistant that coordinates all systems:
-- Personality management
-- Response generation
-- Memory management
-- System integration
+### 1. Main assistant (Tomoka)
+The central assistant coordinates the systems:
+- Personality context and simple prompt templates
+- Basic response generation via a local LLM (if configured)
+- Memory management (local JSON)
+- Optional internet lookups
 
 ### 2. MultilingualSystem
 Handles all language-related functionality:
@@ -215,9 +213,9 @@ self.internet_learning_enabled = True  # Enable internet learning
 ## Commands
 
 - `quit` or `exit`: Exit the chat
-- `stats`: View learning statistics
-- Type in any language to chat
-- Ask questions to trigger internet learning
+- `status`: View current status and simple stats
+- Type in any language to chat (the assistant will attempt to detect language)
+- Ask questions to trigger internet learning (if enabled)
 
 ## Privacy & Security
 

@@ -5,6 +5,7 @@ import re
 from collections import defaultdict
 from datetime import datetime
 import pickle
+from typing import List, Optional
 
 class LearningSystem:
     def __init__(self, data_dir="data"):
@@ -311,3 +312,88 @@ class LearningSystem:
             "total_patterns": len(self.patterns["input_patterns"]),
             "total_responses": len(self.learned_responses["dynamic_responses"])
         }
+
+    def add_word_with_translations(self, word: str, target_languages: Optional[List[str]] = None, multilingual=None):
+        """Add a word to vocabulary and optionally fetch translations.
+
+        - `multilingual` can be an instance of `MultilingualSystem` or omitted.
+        - `target_languages` list of language keys from `MultilingualSystem`.
+        """
+        if not word or not word.strip():
+            return None
+
+        if target_languages is None:
+            target_languages = ["spanish", "french", "german"]
+
+        # Lazy import to avoid circular imports at module load
+        if multilingual is None:
+            try:
+                from multilingual_system import MultilingualSystem
+                multilingual = MultilingualSystem()
+            except Exception:
+                multilingual = None
+
+        translations = {}
+        if multilingual:
+            for lang in target_languages:
+                try:
+                    translations[lang] = multilingual.translate_text(word, lang, source_language="english")
+                except Exception:
+                    translations[lang] = None
+
+        # Ensure vocabulary structures
+        if word not in self.vocabulary["words"]:
+            self.vocabulary["words"][word] = {
+                "first_seen": datetime.now().isoformat(),
+                "contexts": [],
+                "translations": {}
+            }
+
+        # Merge translations and bump frequency
+        self.vocabulary["words"][word].setdefault("translations", {}).update({k: v for k, v in translations.items() if v})
+        self.vocabulary["frequency"][word] += 1
+        self.save_all_data()
+
+        return {
+            "word": word,
+            "translations": translations
+        }
+
+    def enrich_word_from_wikipedia(self, word: str, internet_learning=None):
+        """Attach a short definition/summary to a vocabulary word using Wikipedia.
+
+        - `internet_learning` can be an instance of `InternetLearningSystem` or omitted.
+        """
+        if not word or not word.strip():
+            return None
+
+        if internet_learning is None:
+            try:
+                from internet_learning import InternetLearningSystem
+                internet_learning = InternetLearningSystem()
+            except Exception:
+                internet_learning = None
+
+        definition = None
+        if internet_learning:
+            try:
+                results = internet_learning.search_wikipedia(word)
+                if results:
+                    # Use the extract/content as definition
+                    definition = results[0].get("content") or results[0].get("title")
+            except Exception:
+                definition = None
+
+        # Ensure the word exists
+        if word not in self.vocabulary["words"]:
+            self.vocabulary["words"][word] = {
+                "first_seen": datetime.now().isoformat(),
+                "contexts": [],
+                "translations": {}
+            }
+
+        if definition:
+            self.vocabulary["words"][word]["definition"] = definition
+            self.save_all_data()
+
+        return definition
