@@ -1,0 +1,3 @@
+requests
+
+# Optional: add other dependencies if you use them (e.g., 'beautifulsoup4')
